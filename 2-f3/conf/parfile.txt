@@ -1,0 +1,7 @@
+genotypename:    pruned_data.bed
+snpname:         pruned_data.bim
+indivname:       pruned_data.fam
+outputformat:    PACKEDANCESTRYMAP
+genooutfilename: output.geno
+snpoutfilename:  output.snp
+indoutfilename:  output.ind
