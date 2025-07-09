@@ -17,15 +17,30 @@ def main():
     # 2. 读取输入文件
     # ---------------------------
     try:
-        df = pd.read_csv(args.plink_freq_file, delim_whitespace=True)
+        df = pd.read_csv(args.plink_freq_file, sep=r'\s+')
     except Exception as e:
         sys.stderr.write(f"读取文件失败：{e}\n")
         sys.exit(1)
 
     # ---------------------------
-    # 3. 检查重复的 SNP ID
+    # 3. 检查和修复 SNP ID 问题
     # ---------------------------
-    # 检查是否存在重复的 SNP ID
+    # 检查是否所有 SNP ID 都是 "."
+    if df["SNP"].eq(".").all():
+        sys.stderr.write("警告: 所有 SNP ID 都是 '.'，将使用染色体:位置作为 SNP ID\n")
+        
+        # 如果有 CHR 和位置信息，创建新的 SNP ID
+        if "CHR" in df.columns:
+            # 假设位置信息在某个列中，我们需要从其他信息推断
+            # 为每个唯一的 CHR:A1:A2 组合创建 SNP ID
+            df["SNP"] = df["CHR"].astype(str) + ":" + df.index.astype(str)
+        else:
+            # 使用行号作为 SNP ID
+            df["SNP"] = ["snp_" + str(i) for i in range(len(df))]
+        
+        sys.stderr.write(f"已生成 {df['SNP'].nunique()} 个唯一的 SNP ID\n")
+    
+    # 检查重复的 SNP ID
     duplicated_snps = df["SNP"][df["SNP"].duplicated()].unique()
     if len(duplicated_snps) > 0:
         sys.stderr.write(f"警告: 发现 {len(duplicated_snps)} 个重复的 SNP ID\n")

@@ -1,0 +1,18 @@
+# 群体文件示例
+# 格式：FID IID CLST（家系ID 个体ID 群体名称）
+# 请根据你的实际样本和群体信息修改此文件
+
+# 示例格式：
+# sample001 sample001 hpAfrica1
+# sample002 sample002 hpAfrica1
+# sample003 sample003 hpAfrica2
+# sample004 sample004 hpAsia2
+# sample005 sample005 hpEurope
+
+# 你需要：
+# 1. 将此文件重命名为 pop.cov
+# 2. 替换示例数据为你的实际样本ID和群体分类
+# 3. 确保样本ID与你的PLINK文件中的ID一致
+
+# 可以使用以下命令查看你的PLINK文件中的样本ID：
+# head /mnt/d/幽门螺旋杆菌/Script/分析结果/1-序列处理流/output/geno-ind-snp/7544_filtered_pruned_data.fam
