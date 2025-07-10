@@ -52,6 +52,7 @@ for pop in pops:
 print("", file=outfile)
 
 for rs in rss:
+    row = []
     for pop in pops:
         # 检查该群体是否有这个SNP的数据
         if rs in pop2rs[pop]:
@@ -59,8 +60,11 @@ for rs in rss:
             c1 = int(tmp[0])
             c2 = int(tmp[1])
             c3 = c2-c1
-            print(",".join([str(c1), str(c3)]), end=' ', file=outfile)
+            row.append(f"{c1},{c3}")
         else:
             # 如果该群体没有此SNP的数据，输出0,0
-            print("0,0", end=' ', file=outfile)
-    print("", file=outfile)
+            row.append("0,0")
+    # 检查该行是否全为0,0
+    if all(x == "0,0" for x in row):
+        continue
+    print(" ".join(row), file=outfile)
