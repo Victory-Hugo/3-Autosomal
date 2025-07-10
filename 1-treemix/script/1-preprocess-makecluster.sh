@@ -20,8 +20,8 @@
 '
 #!/bin/bash
 
-WORK_DIR="/mnt/d/幽门螺旋杆菌/Script/分析结果/4-treemix/data/"
-file=${WORK_DIR}/7544_filtered_pruned_data
+WORK_DIR="/mnt/d/幽门螺旋杆菌/Script/分析结果/4-treemix/data/7544_maf99_SNP-noN/"
+file=${WORK_DIR}/filtered
 
 
 cd ${WORK_DIR}
@@ -42,14 +42,19 @@ echo $file
 #     ${file} \
 #     0 
 
+# for treemix
 
+# plink --bfile ${file} \
+#     --allow-extra-chr \
+#     --within ${file}.csv \
+#     --freq
 
-# # 如果存在 plink.frq.strat.gz 则删除
-# if [ -f plink.frq.strat.gz ]; then
-#     rm ${WORK_DIR}/plink.frq.strat.gz
-# fi
+# 如果存在 plink.frq.strat.gz 则删除
+if [ -f plink.frq.strat.gz ]; then
+    rm ${WORK_DIR}/plink.frq.strat.gz
+fi
 
-# gzip ${WORK_DIR}/plink.frq.strat
+gzip ${WORK_DIR}/plink.frq.strat
 
 /home/luolintao/miniconda3/envs/pyg/bin/python3 \
     /mnt/f/OneDrive/文档（科研）/脚本/Download/3-Autosomal/1-treemix/src/plink2treemix.py \
