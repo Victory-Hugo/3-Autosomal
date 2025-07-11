@@ -3,14 +3,7 @@ hpAsia2_Eco	D
 hpNorthAsia	D
 hpSahul	D
 hpSiberia	D
-hspHAEAsiaN	R
-hspHAEAsiaS	R
 hspIndigenousNAmerica	D
 hspIndigenousSAmerica	D
-hspLAEAChinaN	R
-hspLAEAChinaNS	R
-hspLAEAChinaS	R
-hspLAEAJapan	R
-hspLASEAsia	R
 hspUral	D
 R	R
