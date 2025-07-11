@@ -27,38 +27,38 @@ PLINK_PREFIX="${OUTPUT_DIR}/7544_CDS"
 PLINK_HP_PREFIX="${PLINK_PREFIX}_HP"
 
 
-# # # Step 1: 使用PLINK过滤VCF文件并生成BED格式
-# plink --vcf "$VCF_FILE" \
-#       --make-bed \
-#       --double-id \
-#       --allow-extra-chr \
-#       --out "$PLINK_PREFIX" \
-#       --geno 0.1 \
-#       --mind 0.1 \
-#       --indep-pairwise 50 10 0.1 
+# # Step 1: 使用PLINK过滤VCF文件并生成BED格式
+plink --vcf "$VCF_FILE" \
+      --make-bed \
+      --double-id \
+      --allow-extra-chr \
+      --out "$PLINK_PREFIX" \
+      --geno 0.1 \
+      --mind 0.1 \
+      --indep-pairwise 50 10 0.1 
 
-# # 定义PLINK生成的文件
-# FILES=("bed" "bim" "fam")
-# for EXT in "${FILES[@]}"; do
-#     FILE="${PLINK_PREFIX}.${EXT}"
-#     cp "$FILE" "${FILE}.bak"
-# done
+# 定义PLINK生成的文件
+FILES=("bed" "bim" "fam")
+for EXT in "${FILES[@]}"; do
+    FILE="${PLINK_PREFIX}.${EXT}"
+    cp "$FILE" "${FILE}.bak"
+done
 
-# # Step 2: 替换BIM文件中的染色体标识符
-# awk 'BEGIN{OFS="\t"} { $1 = ($1 == "NC_000915.1" ? "1" : $1); print }' \
-#      "${PLINK_PREFIX}.bim" > \
-#      "${OUTPUT_DIR}/temp.bim" && mv "${OUTPUT_DIR}/temp.bim" "${PLINK_PREFIX}.bim"
+# Step 2: 替换BIM文件中的染色体标识符
+awk 'BEGIN{OFS="\t"} { $1 = ($1 == "NC_000915.1" ? "1" : $1); print }' \
+     "${PLINK_PREFIX}.bim" > \
+     "${OUTPUT_DIR}/temp.bim" && mv "${OUTPUT_DIR}/temp.bim" "${PLINK_PREFIX}.bim"
 
-# echo "替换完成！以下文件已更新："
-# echo "${PLINK_PREFIX}.bim"
-# echo "原始文件备份在：${PLINK_PREFIX}.bim.bak"
+echo "替换完成！以下文件已更新："
+echo "${PLINK_PREFIX}.bim"
+echo "原始文件备份在：${PLINK_PREFIX}.bim.bak"
 
-# # Step 3: 使用PLINK选择染色体1并生成新的BED文件
-# plink --bfile "$PLINK_PREFIX" \
-#       --chr 1 \
-#       --make-bed \
-#       --alleleACGT \
-#       --out "$PLINK_HP_PREFIX"
+# Step 3: 使用PLINK选择染色体1并生成新的BED文件
+plink --bfile "$PLINK_PREFIX" \
+      --chr 1 \
+      --make-bed \
+      --alleleACGT \
+      --out "$PLINK_HP_PREFIX"
 
 # Step 4: 使用Shapeit进行相位处理
 shapeit --input-bed "${PLINK_HP_PREFIX}.bed" "${PLINK_HP_PREFIX}.bim" "${PLINK_HP_PREFIX}.fam" \
@@ -77,35 +77,35 @@ awk 'BEGIN{FS=" "; OFS="\t"} {print $2, $1, $6}' "${PLINK_HP_PREFIX}.fam" | tr -
      "${PLINK_HP_PREFIX}.ids"
 
 
-# # Step 6: 使用Perl脚本转换Shapeit输出为fineSTRUCTURE格式
-# echo "使用impute2进行转换，这一步需要耗费很多时间。"
-# impute2chromopainter.pl -J \
-#      "${PLINK_HP_PREFIX}.phased.haps" \
-#      "${PLINK_HP_PREFIX}.phase"
-# dos2unix "$GENETIC_MAP_FINAL"
-# echo '保证genetic_map_Finalversion_HP.txt文件是UNIX格式!'
+# Step 6: 使用Perl脚本转换Shapeit输出为fineSTRUCTURE格式
+echo "使用impute2进行转换，这一步需要耗费很多时间。"
+impute2chromopainter.pl -J \
+     "${PLINK_HP_PREFIX}.phased.haps" \
+     "${PLINK_HP_PREFIX}.phase"
+dos2unix "$GENETIC_MAP_FINAL"
+echo '保证genetic_map_Finalversion_HP.txt文件是UNIX格式!'
 
-# impute2chromopainter.pl -J \
-# #      "/mnt/d/幽门螺旋杆菌/Script/分析结果/fineSTRUCTURE/OUTPUT/7544_CDS_HP.phased.haps" \
-# #      "/mnt/d/幽门螺旋杆菌/Script/分析结果/fineSTRUCTURE/OUTPUT/7544_CDS_HP.phase"
+impute2chromopainter.pl -J \
+#      "/mnt/d/幽门螺旋杆菌/Script/分析结果/fineSTRUCTURE/OUTPUT/7544_CDS_HP.phased.haps" \
+#      "/mnt/d/幽门螺旋杆菌/Script/分析结果/fineSTRUCTURE/OUTPUT/7544_CDS_HP.phase"
 
-# convertrecfile.pl -M \
-#      hap "${PLINK_HP_PREFIX}.phase" \
-#      "$GENETIC_MAP_FINAL" \
-#      "${PLINK_HP_PREFIX}.recombfile"
+convertrecfile.pl -M \
+     hap "${PLINK_HP_PREFIX}.phase" \
+     "$GENETIC_MAP_FINAL" \
+     "${PLINK_HP_PREFIX}.recombfile"
 
-# echo "所有步骤完成！"
-# # 删除备份的.bak文件
-# rm "${PLINK_PREFIX}.bim.bak"
-# rm "${PLINK_PREFIX}.bed.bak"
-# rm "${PLINK_PREFIX}.fam.bak"
-# echo "备份文件已经删除!"
+echo "所有步骤完成！"
+# 删除备份的.bak文件
+rm "${PLINK_PREFIX}.bim.bak"
+rm "${PLINK_PREFIX}.bed.bak"
+rm "${PLINK_PREFIX}.fam.bak"
+echo "备份文件已经删除!"
 
-# # 第三步 计算chromopater所需两参数
-# dos2unix "${PLINK_HP_PREFIX}.ids"
-# echo "保证${PLINK_HP_PREFIX}.ids文件是UNIX格式!"
-# dos2unix "${D_R_FILE}"
-# echo "保证${D_R_FILE}文件是UNIX格式!"
+# 第三步 计算chromopater所需两参数
+dos2unix "${PLINK_HP_PREFIX}.ids"
+echo "保证${PLINK_HP_PREFIX}.ids文件是UNIX格式!"
+dos2unix "${D_R_FILE}"
+echo "保证${D_R_FILE}文件是UNIX格式!"
 
 # # 使用ChromoPainter估算参数，这里先选择1000个受体来估算参数！
 # "ChromoPainterv2" \
