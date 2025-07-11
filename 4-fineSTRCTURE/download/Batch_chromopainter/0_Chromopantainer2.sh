@@ -62,7 +62,7 @@ $SHAPEIT_BIN --input-bed "$PLINK_HP_PREFIX.bed" "$PLINK_HP_PREFIX.bim" "$PLINK_H
              --burn 30 \
              --prune 30 \
              --main 30 \
-             --thread 10
+             --thread 8
 
 # Step 5: 生成ID文件用于ChromoPainter
 #! 特别注意！！这一步生成的ids文件需要进行手动处理，将第二列替换为群体名，第三列替换为1。
