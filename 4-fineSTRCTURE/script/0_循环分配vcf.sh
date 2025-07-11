@@ -2,7 +2,7 @@
 
 # 定义输入目录和待处理的主VCF文件
 INPUT_DIR="/mnt/d/幽门螺旋杆菌/Script/分析结果/6-fineSTRUCTURE/data"
-VCF_FILE="/mnt/d/幽门螺旋杆菌/Script/分析结果/6-fineSTRUCTURE/data/merged_biallelic_7544.NoN.maf99.WGS.recode.SNP.noN.CDS.vcf.gz"
+VCF_FILE="/mnt/d/幽门螺旋杆菌/Script/分析结果/1-序列处理流/output/merge/merged_biallelic_7544.NoN.maf99.WGS.recode.SNP.noN.CDS.vcf.gz"
 
 # 定义处理单个样本文件的函数
 process_file() {
