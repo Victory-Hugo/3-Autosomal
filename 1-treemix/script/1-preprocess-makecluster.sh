@@ -44,20 +44,23 @@ echo $file
 
 # for treemix
 
-plink --bfile ${file} \
-    --allow-extra-chr \
-    --within ${file}.csv \
-    --freq
+# plink --bfile ${file} \
+#     --allow-extra-chr \
+#     --within ${file}.csv \
+#     --freq
 
-# 如果存在 plink.frq.strat.gz 则删除
-if [ -f plink.frq.strat.gz ]; then
-    rm ${WORK_DIR}/plink.frq.strat.gz
-fi
+# # 如果存在 plink.frq.strat.gz 则删除
+# if [ -f plink.frq.strat.gz ]; then
+#     rm ${WORK_DIR}/plink.frq.strat.gz
+# fi
 
-gzip ${WORK_DIR}/plink.frq.strat
+# gzip ${WORK_DIR}/plink.frq.strat
 
-/home/luolintao/miniconda3/envs/pyg/bin/python3 \
-    "/mnt/f/OneDrive/文档（科研）/脚本/Download/3-Autosomal/1-treemix/python/plink2treemix.py" \
+# #! 转为python2运行
+# # todo
+# conda activate py2_env
+python \
+    "/mnt/f/OneDrive/文档（科研）/脚本/Download/3-Autosomal/1-treemix/python/python2-plink2treemix.py" \
     ${WORK_DIR}/plink.frq.strat.gz \
     ${WORK_DIR}/TreeMix.gz
 
