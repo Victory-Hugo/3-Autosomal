@@ -57,7 +57,7 @@ fi
 gzip ${WORK_DIR}/plink.frq.strat
 
 /home/luolintao/miniconda3/envs/pyg/bin/python3 \
-    /mnt/f/OneDrive/文档（科研）/脚本/Download/3-Autosomal/1-treemix/src/plink2treemix.py \
+    "/mnt/f/OneDrive/文档（科研）/脚本/Download/3-Autosomal/1-treemix/python/plink2treemix.py" \
     ${WORK_DIR}/plink.frq.strat.gz \
     ${WORK_DIR}/TreeMix.gz
 
