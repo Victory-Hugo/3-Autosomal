@@ -20,7 +20,7 @@
 '
 #!/bin/bash
 
-WORK_DIR="/mnt/d/幽门螺旋杆菌/Script/分析结果/4-treemix/data/7544_maf99_SNP-noN/"
+WORK_DIR="/mnt/d/幽门螺旋杆菌/Script/分析结果/4-treemix/data/7544_WGS_aln/"
 file=${WORK_DIR}/filtered
 
 
