@@ -1,6 +1,6 @@
 
 # 查找所有Donor_v_Target.chunkcounts.out文件并合并到Chunkcounts.txt，首行只保留一次
-outdir="/home/luolintao/Helicopter/Script/分析结果/fineSTRUCTURE/output"
+outdir="/home/luolintao/Helicopter/Script/分析结果/fineSTRUCTURE/OUTPUT_bak/东亚受到其他所有"
 outfile1="$outdir/Chunkcounts.txt"
 first=1
 > "$outfile1"
