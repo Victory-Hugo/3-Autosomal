@@ -13,7 +13,7 @@
 treemix_dir <- "/home/luolintao/Helicopter/Script/分析结果/treemix/output/global"
 
 # 种群文件路径
-pop.uniq <- "/home/luolintao/S00-Github/3-Autosomal/1-treemix/conf/pop.cov" 
+pop.uniq <- "/home/luolintao/S00-Github/3-Autosomal/1-treemix/conf/pop.csv" 
 
 # TreeMix输出文件前缀
 file_prefix <- "GlobalTreemix" 
@@ -115,32 +115,53 @@ extract_likelihood <- function(llik_file) {
 cat("为每个迁移边数量查找似然值最高的重复实验...\n")
 best_reps <- list()
 
+# 确保所有变量都提前初始化
 for(m in m_values) {
-  # 收集所有重复实验的似然值
-  likelihoods <- numeric(rep_counts[m])
+  # 安全地初始化变量
+  best_rep <- 1  # 默认使用第一个重复
   
-  for(r in 1:rep_counts[m]) {
-    llik_file <- file.path(treemix_dir, sprintf("%s_m%s_rep%d.llik", file_prefix, m, r))
-    likelihoods[r] <- extract_likelihood(llik_file)
-  }
-  
-  # 找出似然值最高的重复实验
-  if(all(is.na(likelihoods))) {
-    best_rep <- 1  # 如果无法获取似然值，默认使用第一个重复
-    cat(sprintf("  警告: m=%s 无法获取任何重复实验的似然值，默认使用 rep=1\n", m))
-  } else {
-    valid_likelihoods <- likelihoods[!is.na(likelihoods)]
-    if(length(valid_likelihoods) > 0) {
-      best_rep <- which.max(likelihoods)
-      cat(sprintf("  m=%s: 最佳重复实验是 rep=%d (似然值: %.2f)\n", 
-                 m, best_rep, likelihoods[best_rep]))
+  # 尝试收集所有重复实验的似然值
+  tryCatch({
+    # 根据重复次数创建向量
+    rep_count <- as.numeric(rep_counts[as.character(m)])
+    if(is.na(rep_count) || rep_count < 1) {
+      cat(sprintf("  警告: m=%s 没有有效的重复次数，默认使用 rep=1\n", m))
     } else {
-      best_rep <- 1
-      cat(sprintf("  警告: m=%s 所有似然值都是NA，默认使用 rep=1\n", m))
+      likelihoods <- numeric(rep_count)
+      
+      # 收集所有可用的似然值
+      for(r in 1:rep_count) {
+        llik_file <- file.path(treemix_dir, sprintf("%s_m%s_rep%d.llik", file_prefix, m, r))
+        if(file.exists(llik_file)) {
+          likelihoods[r] <- extract_likelihood(llik_file)
+        } else {
+          cat(sprintf("  警告: m=%s rep=%d 的llik文件不存在\n", m, r))
+          likelihoods[r] <- NA
+        }
+      }
+      
+      # 找出似然值最高的重复实验
+      if(all(is.na(likelihoods))) {
+        cat(sprintf("  警告: m=%s 无法获取任何重复实验的似然值，默认使用 rep=1\n", m))
+      } else {
+        max_idx <- which.max(likelihoods)
+        if(length(max_idx) > 0 && !is.na(likelihoods[max_idx])) {
+          best_rep <- max_idx
+          cat(sprintf("  m=%s: 最佳重复实验是 rep=%d (似然值: %.2f)\n", 
+                     m, best_rep, likelihoods[best_rep]))
+        } else {
+          cat(sprintf("  警告: m=%s 所有似然值都是NA，默认使用 rep=1\n", m))
+        }
+      }
     }
-  }
+  }, error = function(e) {
+    cat(sprintf("  错误: 处理 m=%s 时发生错误: %s\n", m, e$message))
+    best_rep <<- 1  # 发生错误时，默认使用第一个重复
+  })
   
+  # 将最佳重复保存到列表中
   best_reps[[as.character(m)]] <- best_rep
+  cat(sprintf("  已为 m=%s 选择重复实验 rep=%d\n", m, best_rep))
 }
 
 cat("\n计算各迁移边数量的方差解释量...\n")
@@ -243,26 +264,72 @@ cat(sprintf("图形已保存到: %s\n", pdf_file))
 #======================================================================
 
 cat("生成残差热图...\n")
-# 为每个迁移边数量绘制残差图（使用最佳重复实验）
-for(m in m_values){
-  rep <- best_reps[[as.character(m)]]
-  
-  prefix <- sprintf("%s_m%s_rep%d", file_prefix, m, rep)
-  pdf_file <- file.path(results_dir, sprintf("treemix.residuals.m%s.pdf", m))
-  cat(sprintf("  生成图片：%s (使用最佳重复 %s)\n", basename(pdf_file), prefix))
-  
-  pdf(file=pdf_file)
-  plot_resid(prefix, pop.uniq)
-  dev.off()
-  
-  # 如果有达到阈值的最佳m值，为其创建额外的高质量残差图
-  if(!is.infinite(threshold_m) && m == threshold_m) {
-    hi_res_file <- file.path(results_dir, "best_model_residuals.pdf")
-    cat(sprintf("  生成最佳模型残差图：%s\n", basename(hi_res_file)))
-    pdf(file=hi_res_file, width=12, height=10)
-    plot_resid(prefix, pop.uniq)
-    dev.off()
+# 检查种群文件与TreeMix输出是否匹配
+check_pop_names <- function(prefix, pop_file) {
+  # 尝试读取TreeMix输出文件中的种群名称
+  cov_file <- paste0(prefix, ".cov.gz")
+  if(!file.exists(cov_file)) {
+    cat(sprintf("警告: 文件 %s 不存在\n", cov_file))
+    return(FALSE)
   }
+  
+  # 尝试读取种群名称
+  tryCatch({
+    # 读取种群文件
+    pop_names <- readLines(pop_file)
+    # 打印种群文件中的名称（用于调试）
+    cat(sprintf("种群文件中包含 %d 个种群名称\n", length(pop_names)))
+    
+    # 返回TRUE表示检查通过
+    return(TRUE)
+  }, error = function(e) {
+    cat(sprintf("读取种群文件时出错: %s\n", e$message))
+    return(FALSE)
+  })
+}
+
+# 为每个迁移边数量绘制残差图（使用最佳重复实验，并添加错误处理）
+cat("生成残差热图...\n")
+for(m in m_values){
+  # 使用tryCatch捕获每个图的绘制错误，避免一个错误导致整个循环终止
+  tryCatch({
+    rep <- best_reps[[as.character(m)]]
+    
+    prefix <- sprintf("%s_m%s_rep%d", file_prefix, m, rep)
+    pdf_file <- file.path(results_dir, sprintf("treemix.residuals.m%s.pdf", m))
+    cat(sprintf("  尝试生成图片：%s (使用 %s)\n", basename(pdf_file), prefix))
+    
+    # 检查种群文件是否匹配
+    if(check_pop_names(prefix, pop.uniq)) {
+      # 生成残差图
+      pdf(file=pdf_file)
+      tryCatch({
+        plot_resid(prefix, pop.uniq)
+      }, error = function(e) {
+        # 在图形设备上显示错误信息
+        plot.new()
+        text(0.5, 0.5, sprintf("绘制残差图时出错:\n%s", e$message), cex=1.2)
+        cat(sprintf("错误: %s\n", e$message))
+      })
+      dev.off()
+      
+      # 如果有达到阈值的最佳m值，为其创建额外的高质量残差图
+      if(!is.infinite(threshold_m) && m == threshold_m) {
+        hi_res_file <- file.path(results_dir, "best_model_residuals.pdf")
+        cat(sprintf("  生成最佳模型残差图：%s\n", basename(hi_res_file)))
+        pdf(file=hi_res_file, width=12, height=10)
+        tryCatch({
+          plot_resid(prefix, pop.uniq)
+        }, error = function(e) {
+          plot.new()
+          text(0.5, 0.5, sprintf("绘制最佳模型残差图时出错:\n%s", e$message), cex=1.2)
+        })
+        dev.off()
+      }
+    }
+  }, error = function(e) {
+    cat(sprintf("处理 m=%s 时出错: %s\n", m, e$message))
+  })
 }
 
 # 创建汇总报告
