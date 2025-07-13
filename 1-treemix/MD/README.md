@@ -24,3 +24,8 @@ TreeMix 是一款基于等位基因频率的群体遗传分析工具，可推断
 
 6. **运行 TreeMix**  
     执行 `1-treemix/script/1-treemix-global.sh`，根据实际情况调整参数。
+
+7. **结果分析**  
+    - 运行 `1-treemix/script/2-Result.R` 分析结果。  
+    - 可视化树状图和迁移事件。
+    - 残差分析。
