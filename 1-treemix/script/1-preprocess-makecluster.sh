@@ -44,17 +44,17 @@ echo $file
 
 # for treemix
 
-# plink --bfile ${file} \
-#     --allow-extra-chr \
-#     --within ${file}.csv \
-#     --freq
+plink --bfile ${file} \
+    --allow-extra-chr \
+    --within ${file}.csv \
+    --freq
 
-# # 如果存在 plink.frq.strat.gz 则删除
-# if [ -f plink.frq.strat.gz ]; then
-#     rm ${WORK_DIR}/plink.frq.strat.gz
-# fi
+# 如果存在 plink.frq.strat.gz 则删除
+if [ -f plink.frq.strat.gz ]; then
+    rm ${WORK_DIR}/plink.frq.strat.gz
+fi
 
-# gzip ${WORK_DIR}/plink.frq.strat
+gzip ${WORK_DIR}/plink.frq.strat
 
 # #! 转为python2运行
 # # todo
