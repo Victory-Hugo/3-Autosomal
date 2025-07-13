@@ -2,29 +2,38 @@
 set -euo pipefail
 
 # 输入文件前缀（不带 .bed/.bim/.fam 后缀）
-bed_prefix="/mnt/d/幽门螺旋杆菌/Script/分析结果/ADMIXTURE/output/ADMIXTURE_800_filtered"
+# 请根据实际文件名修改 7544_CDS 前缀
+input_prefix="/home/luolintao/Helicopter/Script/分析结果/ADMIXTURE/data/7544_CDS/7544_CDS"
+
+# 指定输出目录
+output_dir="/home/luolintao/Helicopter/Script/分析结果/ADMIXTURE/output"
+mkdir -p "$output_dir"
 
 # 参数设置
-K_MIN=2       # 最小 K
-K_MAX=12       # 最大 K
-THREADS=1     # 线程数
-CV_FOLDS=10    # 交叉验证折数
-BOOTSTRAPS=100 # bootstrap 次数
-SEED=12345     # 随机种子（可选，保证可重复性）
+K_MIN=8         # 最小 K
+K_MAX=20        # 最大 K
+THREADS=1       # 线程数
+CV_FOLDS=10     # 交叉验证折数
+BOOTSTRAPS=100  # bootstrap 次数
+SEED=12345      # 随机种子（可选，保证可重复性）
 
 # 逐 K 循环运行
 for K in $(seq $K_MIN $K_MAX); do
   echo "=== Running ADMIXTURE for K=${K} ==="
-  admixture \
+  
+  # 为每个 K 设置输出前缀
+  out_prefix="${output_dir}/7544_CDS_K${K}"
+  
+  /home/bin/admixture \
     --cv=$CV_FOLDS \
-    -j$THREADS   \
+    -j$THREADS \
     -B$BOOTSTRAPS \
-    -s$SEED      \
-    "${bed_prefix}.bed" $K \
-    | tee "${bed_prefix}_K${K}.log"
+    -s$SEED \
+    "${input_prefix}.bed" $K \
+    | tee "${out_prefix}.log"
 done
 
 echo "All done. 结果保存在："
-echo "  - ${bed_prefix}_K{10..12}.Q  （群体构成矩阵）"
-echo "  - ${bed_prefix}_K{10..12}.P  （等位基因频率矩阵）"
-echo "  - ${bed_prefix}_K{10..12}.log（运行日志，包括 CV error）"
+echo "  - ${output_dir}/7544_CDS_K{${K_MIN}..${K_MAX}}.Q  （群体构成矩阵）"
+echo "  - ${output_dir}/7544_CDS_K{${K_MIN}..${K_MAX}}.P  （等位基因频率矩阵）"
+echo "  - ${output_dir}/7544_CDS_K{${K_MIN}..${K_MAX}}.log（运行日志，包括 CV error）"
