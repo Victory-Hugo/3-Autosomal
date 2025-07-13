@@ -1,0 +1,1 @@
+Rscript 可视化.R 文件的前缀（在这里是ADMIXTURE）

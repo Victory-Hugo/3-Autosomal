@@ -1,0 +1,1 @@
+grep 'CV error' ./*.log > result.txt
