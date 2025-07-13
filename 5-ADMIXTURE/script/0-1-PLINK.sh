@@ -2,9 +2,9 @@
 set -euo pipefail
 
 # 输入 VCF 文件
-vcf="/mnt/d/幽门螺旋杆菌/Script/分析结果/1-序列处理流/output/merge/merged_biallelic_7544.NoN.maf99.WGS.recode.SNP.vcf.gz"
+vcf="/home/luolintao/Helicopter/Script/分析结果/merged_fasta/WGS.aln.fasta.CDS.vcf.gz"
 # 输出前缀（可根据需要修改）
-out_prefix="/mnt/d/幽门螺旋杆菌/Script/分析结果/ADMIXTURE/output/ADMIXTURE_7544"
+out_prefix="/home/luolintao/Helicopter/Script/分析结果/ADMIXTURE/data/7544_CDS/ADMIXTURE_7544_CDS"
 
 # （1）用 PLINK 生成二进制文件
 plink --vcf "$vcf" \
@@ -31,6 +31,7 @@ plink --bfile "$out_prefix" \
       --geno 0.10 \
       --mind 0.10 \
       --indep-pairwise 50 10 0.1 \
+      --max-maf 0.01 \
       --make-bed \
       --alleleACGT \
       --out "${out_prefix}_filtered"
