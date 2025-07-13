@@ -7,3 +7,4 @@
 3. 运行5-ADMIXTURE/script/0-2-ADMIXTURE.sh计算ADMIXTURE值。
    - 注意：HPC可以使用0-2-ADMIXTURE_HPC.sh
 4. 使用5-ADMIXTURE/script/0-3-ADMIXTURE_plot.sh进行可视化。
+   - 可视化之前请修改`fam`文件第一例为群体名称。
