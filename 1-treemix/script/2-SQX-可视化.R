@@ -1,3 +1,4 @@
+# install.packages("OptM")
 library(OptM)
 # 如果文件前缀不是"global"，请修改为实际的前缀
 # 分析rep1的数据

@@ -4,7 +4,7 @@ import pandas as pd
 
 # ——配置区——
 # 原始 bim 文件路径
-orig_path = "/mnt/d/幽门螺旋杆菌/Script/分析结果/4-treemix/data/7544_WGS_aln/filtered.bim"
+orig_path = "/mnt/d/幽门螺旋杆菌/Script/分析结果/4-treemix/data/3622_maf99/filter_filtered.bim"
 # 备份目录（可以自定义）
 bak_dir = os.path.join(os.path.dirname(orig_path), "bak")
 # ——————

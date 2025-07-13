@@ -20,8 +20,8 @@
 '
 #!/bin/bash
 
-WORK_DIR="/mnt/d/幽门螺旋杆菌/Script/分析结果/4-treemix/data/7544_WGS_aln/"
-file=${WORK_DIR}/filtered
+WORK_DIR="/mnt/d/幽门螺旋杆菌/Script/分析结果/4-treemix/data/3622_maf99/"
+file=${WORK_DIR}/filter_filtered
 
 
 cd ${WORK_DIR}
@@ -60,7 +60,7 @@ gzip ${WORK_DIR}/plink.frq.strat
 # # todo
 # conda activate py2_env
 python \
-    "/mnt/f/OneDrive/文档（科研）/脚本/Download/3-Autosomal/1-treemix/python/python2-plink2treemix.py" \
+    "/mnt/f/OneDrive/文档（科研）/脚本/Download/3-Autosomal/1-treemix/python/plink2treemix.py" \
     ${WORK_DIR}/plink.frq.strat.gz \
     ${WORK_DIR}/TreeMix.gz
 
