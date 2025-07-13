@@ -17,7 +17,7 @@ mkdir -p "$script_dir"
 # ADMIXTURE 参数设置
 K_MIN=8         # 最小 K
 K_MAX=20        # 最大 K
-THREADS=1       # 线程数
+THREADS=8       # 线程数
 CV_FOLDS=10     # 交叉验证折数
 BOOTSTRAPS=100  # bootstrap 次数
 SEED=12345      # 随机种子
