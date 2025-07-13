@@ -4,7 +4,7 @@
 # TreeMix结果分析与可视化脚本
 # 使用说明：
 # 这个脚本已经设置了固定路径，可以在R环境中逐行运行
-# 适用于GlobalTreemix_m{m}_rep{r}命名格式的TreeMix输出文件
+# 适用于Treemix{m}.{r}命名格式的TreeMix输出文件
 #======================================================================
 
 # ======= 路径和参数设置（可根据需要修改） =======
@@ -16,7 +16,7 @@ treemix_dir <- "/home/luolintao/Helicopter/Script/分析结果/treemix/output/gl
 pop.uniq <- "/home/luolintao/S00-Github/3-Autosomal/1-treemix/conf/pop.csv" 
 
 # TreeMix输出文件前缀
-file_prefix <- "GlobalTreemix" 
+file_prefix <- "Treemix" 
 
 # 结果输出目录
 results_dir <- file.path(treemix_dir, "analysis")
@@ -49,14 +49,15 @@ if(length(all_files) == 0) {
 }
 
 # 提取不同的迁移边数量
-m_values <- unique(gsub(".*_m([0-9]+)_rep.*", "\\1", all_files))
+m_values <- unique(gsub(".*([0-9]+)\\.[0-9]+\\.covse\\.gz$", "\\1", all_files))
 m_values <- sort(as.numeric(m_values))
 cat(sprintf("发现迁移边数量: %s\n", paste(m_values, collapse=", ")))
 
 # 确定每个迁移边数量的重复数
 rep_counts <- sapply(m_values, function(m) {
-  files <- list.files(path=treemix_dir, pattern=paste0("_m", m, "_rep[0-9]+\\.covse\\.gz$"))
-  max_rep <- max(as.numeric(gsub(".*_rep([0-9]+)\\.covse\\.gz$", "\\1", files)))
+  files <- list.files(path=treemix_dir, pattern=paste0(file_prefix, m, "\\.[0-9]+\\.covse\\.gz$"))
+  rep_nums <- as.numeric(gsub(paste0(".*", file_prefix, m, "\\.([0-9]+)\\.covse\\.gz$"), "\\1", files))
+  max_rep <- max(rep_nums)
   return(max_rep)
 })
 names(rep_counts) <- m_values
@@ -79,7 +80,7 @@ cat("绘制迁移边树结构图（使用第一个重复实验）...\n")
 for(m in m_values){
   rep <- 1  # 默认使用第一次重复的结果，后面会更新为最佳重复
   
-  prefix <- sprintf("%s_m%s_rep%d", file_prefix, m, rep)
+  prefix <- sprintf("%s%s.%d", file_prefix, m, rep)
   pdf_file <- file.path(results_dir, paste0("treemix.m", m, ".pdf"))
   cat(sprintf("  生成图片：%s (使用 %s)\n", basename(pdf_file), prefix))
   
@@ -131,7 +132,7 @@ for(m in m_values) {
       
       # 收集所有可用的似然值
       for(r in 1:rep_count) {
-        llik_file <- file.path(treemix_dir, sprintf("%s_m%s_rep%d.llik", file_prefix, m, r))
+        llik_file <- file.path(treemix_dir, sprintf("%s%s.%d.llik", file_prefix, m, r))
         if(file.exists(llik_file)) {
           likelihoods[r] <- extract_likelihood(llik_file)
         } else {
@@ -176,7 +177,7 @@ for(i in 1:length(m_values)){
   m <- m_values[i]
   rep <- best_reps[[as.character(m)]]  # 使用找到的最佳重复实验
   
-  prefix <- sprintf("%s_m%s_rep%d", file_prefix, m, rep)
+  prefix <- sprintf("%s%s.%d", file_prefix, m, rep)
   best_prefixes[i] <- prefix
   m_results[i] <- get_f(prefix)
   cat(sprintf("  m=%s (rep=%d) 方差解释量: %.4f%%\n", m, rep, m_results[i]*100))
@@ -205,7 +206,7 @@ if(is.infinite(threshold_m)) {
   
   # 创建最佳模型的副本
   best_rep <- best_reps[[as.character(threshold_m)]]
-  best_tree_file <- sprintf("%s_m%s_rep%d.treeout.gz", file_prefix, threshold_m, best_rep)
+  best_tree_file <- sprintf("%s%s.%d.treeout.gz", file_prefix, threshold_m, best_rep)
   if(file.exists(file.path(treemix_dir, best_tree_file))) {
     file.copy(
       from = file.path(treemix_dir, best_tree_file),
@@ -215,7 +216,7 @@ if(is.infinite(threshold_m)) {
     cat(sprintf("已将最佳模型文件复制到: %s\n", file.path(results_dir, "best_model.treeout.gz")))
     
     # 同时重新生成最佳模型的树图
-    best_prefix <- sprintf("%s_m%s_rep%d", file_prefix, threshold_m, best_rep)
+    best_prefix <- sprintf("%s%s.%d", file_prefix, threshold_m, best_rep)
     pdf_file <- file.path(results_dir, paste0("best_treemix_m", threshold_m, "_rep", best_rep, ".pdf"))
     cat(sprintf("生成最佳模型图片：%s\n", basename(pdf_file)))
     pdf(file=pdf_file, width=12, height=8)
@@ -295,7 +296,7 @@ for(m in m_values){
   tryCatch({
     rep <- best_reps[[as.character(m)]]
     
-    prefix <- sprintf("%s_m%s_rep%d", file_prefix, m, rep)
+    prefix <- sprintf("%s%s.%d", file_prefix, m, rep)
     pdf_file <- file.path(results_dir, sprintf("treemix.residuals.m%s.pdf", m))
     cat(sprintf("  尝试生成图片：%s (使用 %s)\n", basename(pdf_file), prefix))
     
@@ -350,7 +351,7 @@ cat("\n", file=report_con)
 if(!is.infinite(threshold_m)) {
   best_rep <- best_reps[[as.character(threshold_m)]]
   cat(sprintf("达到 %.1f%% 方差解释量阈值的最小迁移边数量: m=%d\n", threshold, threshold_m), file=report_con)
-  cat(sprintf("最佳模型: %s_m%s_rep%d\n", file_prefix, threshold_m, best_rep), file=report_con)
+  cat(sprintf("最佳模型: %s%s.%d\n", file_prefix, threshold_m, best_rep), file=report_con)
   cat(sprintf("方差解释量: %.4f%%\n", m_results[as.character(threshold_m)]*100), file=report_con)
 } else {
   best_m <- m_values[which.max(m_results)]

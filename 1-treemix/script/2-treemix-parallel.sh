@@ -40,7 +40,7 @@ mkdir -p "\$OUTPUT_DIR"
 
 # 对每个 m 做 10 次重复
 for rep in {1..10}; do
-  prefix="\${OUTPUT_DIR}/GlobalTreemix_m${m}_rep\${rep}"
+  prefix="\${OUTPUT_DIR}/Treemix${m}.\${rep}"
   echo "  [m=${m} rep=\${rep}] 运行 TreeMix..."
   treemix -i "\$INPUT_FILE" \\
     -root "\$OUTGROUP" \\
@@ -48,7 +48,7 @@ for rep in {1..10}; do
     -m ${m} \\
     -se -bootstrap \\
     -global \\
-    -k 1000 \\
+    -k 500 \\
     -threads 8
 
   echo "  [m=${m} rep=\${rep}] 分析完成"
