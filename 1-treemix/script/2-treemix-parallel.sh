@@ -16,10 +16,7 @@ echo "生成TreeMix分析脚本..."
 mkdir -p "$OUTPUT_DIR"
 mkdir -p "$SCRIPT_DIR"
 
-# 初始化方差解释量汇总文件（如果不存在则写入表头）
-if [ ! -f "${OUTPUT_DIR}/variance_explained.txt" ]; then
-  echo "m,rep,variance" > "${OUTPUT_DIR}/variance_explained.txt"
-fi
+
 
 # 为每个迁移边数量生成脚本
 for m in {0..15}; do
@@ -54,16 +51,7 @@ for rep in {1..10}; do
     -k 1000 \\
     -threads 8
 
-  echo "  [m=${m} rep=\${rep}] 分析完成，开始提取方差解释量..."
-  # 提取 variance explained（%），这里假设 treemix 输出到标准输出的最后一行包含 “variance explained: XX.XX%”
-  var_line=\$(grep -i "variance explained" "\${prefix}.llik" || true)
-  if [ -n "\$var_line" ]; then
-    # 提取百分号前的数字
-    variance=\$(echo "\$var_line" | sed -E 's/.*variance explained[: ]+([0-9.]+)%.*/\1/')
-    echo "${m},\${rep},\${variance}" >> "\${OUTPUT_DIR}/variance_explained.txt"
-  else
-    echo "WARNING: 未在 \${prefix}.llik 中找到 variance explained 信息" >&2
-  fi
+  echo "  [m=${m} rep=\${rep}] 分析完成"
 done
 
 echo "全部重复实验完成：m=${m}"

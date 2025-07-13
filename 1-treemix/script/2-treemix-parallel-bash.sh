@@ -25,8 +25,8 @@ for script in *.sh; do
         # 使用nohup运行脚本，并将输出重定向到对应的log文件
         nohup bash "$script" > "${base_name}.log" 2>&1 &
         
-        # 等待1秒，避免同时提交太多任务
-        sleep 1
+        # 等待0.5秒，避免同时提交太多任务
+        sleep 0.5
     fi
 done
 
