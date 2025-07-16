@@ -20,7 +20,7 @@
 '
 #!/bin/bash
 
-WORK_DIR="/mnt/d/幽门螺旋杆菌/Script/分析结果/4-treemix/data/3622_maf99/"
+WORK_DIR="/mnt/d/幽门螺旋杆菌/Script/分析结果/4-treemix/data/3219_maf99/"
 file=${WORK_DIR}/filter_filtered
 
 
