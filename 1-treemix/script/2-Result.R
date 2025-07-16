@@ -10,10 +10,10 @@
 # ======= 路径和参数设置（可根据需要修改） =======
 
 # TreeMix输出文件目录
-treemix_dir <- "/home/luolintao/Helicopter/Script/分析结果/treemix/output/global"
+treemix_dir <- "/home/luolintao/Helicopter/Script/分析结果/treemix/output/global/"
 
 # 种群文件路径
-pop.uniq <- "/home/luolintao/S00-Github/3-Autosomal/1-treemix/conf/pop.csv" 
+pop.uniq <- "/home/luolintao/S00-Github/3-Autosomal/1-treemix/conf/pop_global.csv" 
 
 # TreeMix输出文件前缀
 file_prefix <- "Treemix" 
@@ -49,14 +49,15 @@ if(length(all_files) == 0) {
 }
 
 # 提取不同的迁移边数量
-m_values <- unique(gsub(".*([0-9]+)\\.[0-9]+\\.covse\\.gz$", "\\1", all_files))
+# 修改正则表达式以正确匹配两位数的迁移边数量
+m_values <- unique(gsub(paste0("^", file_prefix, "([0-9]+)\\.[0-9]+\\.covse\\.gz$"), "\\1", all_files))
 m_values <- sort(as.numeric(m_values))
 cat(sprintf("发现迁移边数量: %s\n", paste(m_values, collapse=", ")))
 
 # 确定每个迁移边数量的重复数
 rep_counts <- sapply(m_values, function(m) {
-  files <- list.files(path=treemix_dir, pattern=paste0(file_prefix, m, "\\.[0-9]+\\.covse\\.gz$"))
-  rep_nums <- as.numeric(gsub(paste0(".*", file_prefix, m, "\\.([0-9]+)\\.covse\\.gz$"), "\\1", files))
+  files <- list.files(path=treemix_dir, pattern=paste0("^", file_prefix, m, "\\.[0-9]+\\.covse\\.gz$"))
+  rep_nums <- as.numeric(gsub(paste0("^", file_prefix, m, "\\.([0-9]+)\\.covse\\.gz$"), "\\1", files))
   max_rep <- max(rep_nums)
   return(max_rep)
 })
@@ -365,3 +366,4 @@ close(report_con)
 cat("所有分析完成！\n")
 cat(sprintf("结果基于 %d 种迁移边数量分析\n", length(m_values)))
 cat(sprintf("所有结果已保存到目录: %s\n", results_dir))
+
