@@ -2,11 +2,11 @@
 # 生成16个独立的TreeMix运行脚本，对应迁移边数量m从0到15，每种m做10次重复
 #*===============================
 # todo 设定输入文件路径，输入文件通过./python/plink2treemix.py生成
-INPUT_FILE="/home/luolintao/Helicopter/Script/分析结果/treemix/data/TreeMix_China3622.gz"
+INPUT_FILE="/home/luolintao/Helicopter/Script/分析结果/treemix/data/TreeMix_China3219.gz"
 # todo 设定输出目录
-OUTPUT_DIR="/home/luolintao/Helicopter/Script/分析结果/treemix/output/China/"
+OUTPUT_DIR="/home/luolintao/Helicopter/Script/分析结果/treemix/output/China_only/"
 # todo 设定脚本输出目录
-SCRIPT_DIR="/home/luolintao/Helicopter/Script/分析结果/treemix/script/China/"
+SCRIPT_DIR="/home/luolintao/Helicopter/Script/分析结果/treemix/script/China_only/"
 # todo 设定outgroup
 OUTGROUP="hpAfrica2"
 #*===============================

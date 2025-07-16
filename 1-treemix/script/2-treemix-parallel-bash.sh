@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 设置工作目录
-WORK_DIR="/home/luolintao/Helicopter/Script/分析结果/treemix/script/China/"
+WORK_DIR="/home/luolintao/Helicopter/Script/分析结果/treemix/script/China_only/"
 
 # 检查目录是否存在
 if [ ! -d "$WORK_DIR" ]; then
