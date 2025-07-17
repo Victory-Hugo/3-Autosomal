@@ -10,10 +10,10 @@
 # ======= 路径和参数设置（可根据需要修改） =======
 
 # TreeMix输出文件目录
-treemix_dir <- "/home/luolintao/Helicopter/Script/分析结果/treemix/output/global/"
+treemix_dir <- "/home/luolintao/Helicopter/Script/分析结果/treemix/output/China_only/"
 
 # 种群文件路径
-pop.uniq <- "/home/luolintao/S00-Github/3-Autosomal/1-treemix/conf/pop_global.csv" 
+pop.uniq <- "/home/luolintao/S00-Github/3-Autosomal/1-treemix/conf/pop_China_only.csv" 
 
 # TreeMix输出文件前缀
 file_prefix <- "Treemix" 
