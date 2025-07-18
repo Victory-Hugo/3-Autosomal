@@ -11,9 +11,9 @@ set -euo pipefail
 # -----------------------------------
 # 定义输入输出文件路径
 # -----------------------------------
-VCF_FILE="/home/luolintao/Helicopter/Script/分析结果/merged_fasta/WGS.aln.fasta.vcf.gz"
-REGION_CSV="/home/luolintao/S00-Github/3-Autosomal/5-ADMIXTURE/conf/CDS_region.csv"
-OUTPUT_VCF="/home/luolintao/Helicopter/Script/分析结果/merged_fasta/WGS.aln.fasta.CDS.vcf.gz"
+VCF_FILE="/mnt/d/幽门螺旋杆菌/Script/分析结果/1-序列处理流/output/merge/merged.vcf.gz"
+REGION_CSV="/mnt/f/OneDrive/文档（科研）/脚本/Download/3-Autosomal/5-ADMIXTURE/conf/CDS_region.csv"
+OUTPUT_VCF="/mnt/d/幽门螺旋杆菌/Script/分析结果/ADMIXTURE/data/merged.CDS.vcf.gz"
 
 # 定义染色体名称（根据实际情况修改）
 # 请确保此名称与 VCF 文件中的染色体名称一致

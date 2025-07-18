@@ -3,12 +3,12 @@ set -euo pipefail
 
 # 输入文件前缀（不带 .bed/.bim/.fam 后缀）
 # 请根据实际文件名修改 7544_CDS 前缀
-input_prefix="/home/luolintao/Helicopter/Script/分析结果/ADMIXTURE/data/7544_CDS/7544_CDS"
+input_prefix="/mnt/d/幽门螺旋杆菌/Script/分析结果/ADMIXTURE/data/merged.CDS.snp.7544_filtered"
 
 # 指定输出目录
-output_dir="/home/luolintao/Helicopter/Script/分析结果/ADMIXTURE/output"
+output_dir="/mnt/d/幽门螺旋杆菌/Script/分析结果/ADMIXTURE/output/"
 mkdir -p "$output_dir"
-
+cd "$output_dir"
 # 参数设置
 K_MIN=8         # 最小 K
 K_MAX=20        # 最大 K
@@ -24,7 +24,7 @@ for K in $(seq $K_MIN $K_MAX); do
   # 为每个 K 设置输出前缀
   out_prefix="${output_dir}/7544_CDS_K${K}"
   
-  /home/bin/admixture \
+  admixture \
     --cv=$CV_FOLDS \
     -j$THREADS \
     -B$BOOTSTRAPS \

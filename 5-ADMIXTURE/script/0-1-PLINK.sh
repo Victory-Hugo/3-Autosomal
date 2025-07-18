@@ -2,9 +2,9 @@
 set -euo pipefail
 
 # 输入 VCF 文件
-vcf="/home/luolintao/Helicopter/Script/分析结果/merged_fasta/WGS.aln.fasta.CDS.vcf.gz"
+vcf="/mnt/d/幽门螺旋杆菌/Script/分析结果/1-序列处理流/output/merge/WGS.aln.fasta.CDS_地理东亚及周边_3378_filter.vcf.gz"
 # 输出前缀（可根据需要修改）
-out_prefix="/home/luolintao/Helicopter/Script/分析结果/ADMIXTURE/data/7544_CDS/ADMIXTURE_7544_CDS"
+out_prefix="/mnt/d/幽门螺旋杆菌/Script/分析结果/ADMIXTURE/data/WGS.aln.fasta.CDS_地理东亚及周边_3378"
 
 # （1）用 PLINK 生成二进制文件
 plink --vcf "$vcf" \
@@ -27,11 +27,13 @@ echo "✅ ${out_prefix}.bim 已替换，原文件保存在 ${out_prefix}.bim.bak
 
 # （3）可选：对缺失率较高的位点/样本做过滤
 # 如果你用的是 PLINK1.9，可以去掉 --alleleACGT；PLINK2.0 可保留
+#! --maf 0.01仅保留MAF大于0.01的频率的变异，这些变异在群体中更常见，减少了低频变异的噪音。
+#! --geno 0.10 表示过滤缺失率超过10%的位点，这些位点由于缺失数据过多，可能会影响后续分析的准确性。
+#! --mind 0.10 表示过滤缺失率超过10%的样本，这样可以确保分析中只包含数据完整的样本。
+#! --indep-pairwise 500 10 0.2 表示进行连锁不平衡(LD)过滤，保留每500个SNP中相关性小于0.2的SNP对。
 plink --bfile "$out_prefix" \
-      --geno 0.10 \
-      --mind 0.10 \
-      --indep-pairwise 50 10 0.1 \
-      --max-maf 0.01 \
+      --indep-pairwise 100 10 0.2 \
+      --maf 0.01   \
       --make-bed \
       --alleleACGT \
       --out "${out_prefix}_filtered"
