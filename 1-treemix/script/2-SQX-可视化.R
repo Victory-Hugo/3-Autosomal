@@ -16,7 +16,7 @@ for (pkg in required_packages) {
 cat("=== TreeMix OptM 分析开始 ===\n")
 
 # 设置目录
-setwd('/home/luolintao/Helicopter/Script/分析结果/treemix/output/China/')
+setwd('/home/luolintao/Helicopter/Script/分析结果/treemix/output/China_only/')
 # 确保输出目录存在
 if (!dir.exists("./analysis")) {
   dir.create("./analysis")
@@ -62,4 +62,5 @@ cat("  - 图形文件: ./analysis/optM_linear.pdf\n")
 cat("  - 数据文件: ./analysis/df_linear.csv\n")
 cat("\n数据摘要:\n")
 print(df_linear)
+
 
