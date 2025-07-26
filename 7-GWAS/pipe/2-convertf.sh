@@ -1,0 +1,1 @@
+convertf -p /home/luolintao/S00-Github/3-Autosomal/7-GWAS/conf/convertf.par
