@@ -89,25 +89,25 @@ echo ">>> 4.4 SNP 子集 QC"
 plink --bfile Han_SNP1    --geno 0.05    --make-bed --out Han_SNP2
 plink --bfile Han_SNP2    --maf 0.01     --make-bed --out Han_SNP3
 plink --bfile Han_SNP3    --hwe 0.00001  --make-bed --out Han_SNP4
-plink --bfile Tibetan_SNP1--geno 0.05    --make-bed --out Tibetan_SNP2
-plink --bfile Tibetan_SNP2--maf 0.01     --make-bed --out Tibetan_SNP3
-plink --bfile Tibetan_SNP3--hwe 0.00001  --make-bed --out Tibetan_SNP4
+plink --bfile Tibetan_SNP1 --geno 0.05    --make-bed --out Tibetan_SNP2
+plink --bfile Tibetan_SNP2 --maf 0.01     --make-bed --out Tibetan_SNP3
+plink --bfile Tibetan_SNP3 --hwe 0.00001  --make-bed --out Tibetan_SNP4
 
 #----------------------------------------
 # 5. 主成分分析（PCA）
 #----------------------------------------
 
 echo ">>> 5.1 计算前 20 个主成分"
-plink --bfile Han3        --pca 20 --out Han3
-plink --bfile Tibetan4    --pca 20 --out Tibetan4
-plink --bfile Han_SNP4    --pca 20 --out Han_SNP4
-plink --bfile Tibetan_SNP4--pca 20 --out Tibetan_SNP4
+plink --bfile Han3         --pca 20 --out Han3
+plink --bfile Tibetan4     --pca 20 --out Tibetan4
+plink --bfile Han_SNP4     --pca 20 --out Han_SNP4
+plink --bfile Tibetan_SNP4 --pca 20 --out Tibetan_SNP4
 
 echo ">>> 5.2 用 twstats 评估显著主成分"
 twstats -t twtable -i Han3.eigenval        -o Han3.out
 twstats -t twtable -i Tibetan4.eigenval    -o Tibetan4.out
 twstats -t twtable -i Han_SNP4.eigenval    -o Han_SNP4.out
-twstats -t twtable -i Tibetan_SNP4.eigenval- o Tibetan_SNP4.out
+twstats -t twtable -i Tibetan_SNP4.eigenval -o Tibetan_SNP4.out
 
 #----------------------------------------
 # 6. Logistic 回归

@@ -1,7 +1,0 @@
-genotypename:    /mnt/c/Users/Administrator/Desktop/data/Han_SNP4.geno
-snpname:         /mnt/c/Users/Administrator/Desktop/data/Han_SNP4.snp
-indivname:       /mnt/c/Users/Administrator/Desktop/data/Han_SNP4.ind
-outputformat:    PACKEDPED
-genotypeoutname: /mnt/c/Users/Administrator/Desktop/data/Han_SNP4.ped
-snpoutname:      /mnt/c/Users/Administrator/Desktop/data/Han_SNP4.map
-indivoutname:    /mnt/c/Users/Administrator/Desktop/data/Han_SNP4.pedind
