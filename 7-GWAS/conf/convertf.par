@@ -1,7 +1,7 @@
-genotypename:    /home/luolintao/09_GWAS_Autosomal/data/Han_SNP4.geno
-snpname:         /home/luolintao/09_GWAS_Autosomal/data/Han_SNP4.snp
-indivname:       /home/luolintao/09_GWAS_Autosomal/data/Han_SNP4.ind
+genotypename:    /mnt/c/Users/Administrator/Desktop/data/Han_SNP4.geno
+snpname:         /mnt/c/Users/Administrator/Desktop/data/Han_SNP4.snp
+indivname:       /mnt/c/Users/Administrator/Desktop/data/Han_SNP4.ind
 outputformat:    PACKEDPED
-genotypeoutname: /home/luolintao/09_GWAS_Autosomal/data/Han_SNP4.ped
-snpoutname:      /home/luolintao/09_GWAS_Autosomal/data/Han_SNP4.map
-indivoutname:    /home/luolintao/09_GWAS_Autosomal/data/Han_SNP4.pedind
+genotypeoutname: /mnt/c/Users/Administrator/Desktop/data/Han_SNP4.ped
+snpoutname:      /mnt/c/Users/Administrator/Desktop/data/Han_SNP4.map
+indivoutname:    /mnt/c/Users/Administrator/Desktop/data/Han_SNP4.pedind

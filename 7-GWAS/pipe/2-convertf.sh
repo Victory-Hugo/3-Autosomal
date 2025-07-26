@@ -1,1 +1,1 @@
-convertf -p /home/luolintao/S00-Github/3-Autosomal/7-GWAS/conf/convertf.par
+convertf -p "/mnt/f/OneDrive/文档（科研）/脚本/Download/3-Autosomal/7-GWAS/conf/convertf.par"
