@@ -9,10 +9,11 @@ BASE_DIR='/mnt/d/幽门螺旋杆菌/Script/分析结果/FST/temp/' # todo Fst结
 TEMP_ALN="${BASE_DIR}/temp.aln" # todo 临时对齐文件
 #* 配置代码
 PYTHON_T='/mnt/f/OneDrive/文档（科研）/脚本/Download/3-Autosomal/9-FST-popgenome/python/2-1-数据转置.py'
-PYTHON_THRESHOLD='/mnt/f/OneDrive/文档（科研）/脚本/Download/3-Autosomal/9-FST-popgenome/python/2-2-合理阈值.py'
-PYTHON_VISUALIZATION='/mnt/f/OneDrive/文档（科研）/脚本/Download/3-Autosomal/9-FST-popgenome/python/2-3-FST可视化.py'
+PYTHON_THRESHOLD='/mnt/f/OneDrive/文档（科研）/脚本/Download/3-Autosomal/9-FST-popgenome/python/2-1-合理阈值.py'
+PYTHON_VISUALIZATION='/mnt/f/OneDrive/文档（科研）/脚本/Download/3-Autosomal/9-FST-popgenome/python/2-2-FST可视化.py'
 R_SCRIPT='/mnt/f/OneDrive/文档（科研）/脚本/Download/3-Autosomal/9-FST-popgenome/pipe/s6_analysis_FST_BATCH.r' # todo R脚本路径
 
+#! 注意,META文件第二列必须重命名为hsp1和hsp2来代表用于比较的2个群体
 Rscript ${R_SCRIPT} \
   "${BASE_DIR}/META.csv" \
   "${FASTA_DIR}" \
