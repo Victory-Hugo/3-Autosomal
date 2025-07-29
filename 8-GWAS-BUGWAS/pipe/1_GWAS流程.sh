@@ -47,11 +47,7 @@ ${PYTHON3_PATH} ${PYTHON_BUGWAS_SCRIPT} \
      ${INPUT_DIR}/tmp2.txt \
      --output_file ${INPUT_DIR}/geno_biallelic_SNP.txt
 
-# 或者自定义输出文件路径，并关闭双等位过滤（保留所有变异）
-# python script.py /path/to/input.txt --output_file /path/to/custom_output.txt --no-biallelic
 
-
-## 使用使用所有（CDS和基因间）位点生成的树，即treeFull
 ## 生成输入文件、运行GWAS、后处理和绘制树图
 ## 输入：
 ##          1. 生成输入：METADATA/strains_SiberiaIndAm.csv [仅包含来自重点人群的菌株，提取表型；此文件基于不同菌株的元数据手动生成，如其位置、生态种归属等] -> input/pheno.txt [表型文件], strains_pop.txt [所有菌株的人群信息], input/tree [用于GWAS的树]
@@ -61,9 +57,3 @@ ${PYTHON3_PATH} ${PYTHON_BUGWAS_SCRIPT} \
 ##          1. 生成输入：input/pheno.txt [表型文件], PLOT/TREE/TREE_GWAS.jpeg [用于GWAS输入的树图]
 ##          2. GWAS：bugwas输出 + data_GWAS.RData [GWAS输出作为RData对象]
 ##          3. 分析：PLOT/GWAS/regions/* [曼哈顿图及基因组不同区域的缩放图], significantCDS.csv [显著的CDS列表], significantSNPs.txt [显著的SNP列表]
-# Rscript s5_analysis_GWAS.r
-
-
-# rm -rf /mnt/d/幽门螺旋杆菌/Script/分析结果/8-临床结局相关/data/GWAS/Atrophy-萎缩/tmp1.vcf \
-#     /mnt/d/幽门螺旋杆菌/Script/分析结果/8-临床结局相关/data/GWAS/Atrophy-萎缩/alignmentSub.aln \
-#      /mnt/d/幽门螺旋杆菌/Script/分析结果/8-临床结局相关/data/GWAS/Atrophy-萎缩/alignmentSub.temp
