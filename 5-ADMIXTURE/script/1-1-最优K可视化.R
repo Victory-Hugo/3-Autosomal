@@ -1,7 +1,7 @@
 library(tidyverse)
 
 # 读取CSV文件
-K_CV <- read.csv('/home/luolintao/Helicopter/Script/分析结果/ADMIXTURE/data/cv_results.csv')
+K_CV <- read.csv('/mnt/d/幽门螺旋杆菌/Script/分析结果/ADMIXTURE/data/cv_results.csv')
 
 # 方法1: 保持K为数值型，以便线条正确连接
 K_CV |> 
@@ -18,3 +18,4 @@ K_CV |>
     axis.title = element_text(size = 12),
     axis.text = element_text(size = 10)
   ) 
+
