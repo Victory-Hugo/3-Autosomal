@@ -4,7 +4,7 @@ set -euo pipefail
 # ==== 配置区 ====
 
 # 输入文件前缀（不带 .bed/.bim/.fam 后缀）
-input_prefix="/home/luolintao/Helicopter/Script/分析结果/ADMIXTURE/data/7544_CDS/ADMIXTURE_7544_CDS_filtered"
+input_prefix="/home/luolintao/Helicopter/Script/分析结果/ADMIXTURE/data/TXQ/WGS.aln.fasta.CDS_地理东亚及周边_3378_filtered"
 
 # 指定 ADMIXTURE 输出结果目录
 output_dir="/home/luolintao/Helicopter/Script/分析结果/ADMIXTURE/output"
@@ -15,8 +15,8 @@ script_dir="/home/luolintao/Helicopter/Script/分析结果/ADMIXTURE/script"
 mkdir -p "$script_dir"
 
 # ADMIXTURE 参数设置
-K_MIN=8         # 最小 K
-K_MAX=20        # 最大 K
+K_MIN=6         # 最小 K
+K_MAX=15        # 最大 K
 THREADS=8       # 线程数
 CV_FOLDS=10     # 交叉验证折数
 BOOTSTRAPS=100  # bootstrap 次数

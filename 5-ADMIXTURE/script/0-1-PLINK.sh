@@ -2,9 +2,9 @@
 set -euo pipefail
 
 # 输入 VCF 文件
-vcf="/mnt/d/幽门螺旋杆菌/Script/分析结果/1-序列处理流/output/merge/WGS.aln.fasta.CDS_地理东亚及周边_3378_filter.vcf.gz"
+vcf="/home/luolintao/Helicopter/Script/分析结果/ADMIXTURE/data/TXQ/merged_dedup_biallelic.CORE.SNP.recode_CDS.vcf.gz"
 # 输出前缀（可根据需要修改）
-out_prefix="/mnt/d/幽门螺旋杆菌/Script/分析结果/ADMIXTURE/data/WGS.aln.fasta.CDS_地理东亚及周边_3378"
+out_prefix="/home/luolintao/Helicopter/Script/分析结果/ADMIXTURE/data/TXQ/WGS.aln.fasta.CDS_地理东亚及周边_3378"
 
 # （1）用 PLINK 生成二进制文件
 plink --vcf "$vcf" \
