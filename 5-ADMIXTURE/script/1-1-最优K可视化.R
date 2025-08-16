@@ -1,9 +1,9 @@
 library(tidyverse)
 
 # 读取CSV文件
-K_CV <- read.csv('/mnt/d/幽门螺旋杆菌/Script/分析结果/ADMIXTURE/data/cv_results.csv')
-
-# 方法1: 保持K为数值型，以便线条正确连接
+K_CV <- read.csv('/mnt/f/1_唐小琼项目/13-ADMIXTURE/output/cv_results.csv')
+K_CV
+# 方法1: 保持K为因子
 K_CV |> 
   ggplot(aes(x = K, y = CV, group = 1)) +  # 添加group=1使所有点连接在一起
   geom_line() +
@@ -19,3 +19,16 @@ K_CV |>
     axis.text = element_text(size = 10)
   ) 
 
+library(tidyplots)
+K_CV |> 
+   tidyplot(
+    x = K,
+    y = CV,
+    color= CV
+   ) |>
+   add_line(group = 1) |>
+   add_data_points(size = 3) |>
+   add_data_labels(label = CV,fontsize = 7) |>
+   adjust_x_axis(breaks = K_CV$K)  |>
+   adjust_colors(colors_continuous_cividis) |>
+   save_plot("/mnt/f/1_唐小琼项目/13-ADMIXTURE/output/最优K可视化.pdf")

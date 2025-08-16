@@ -1,7 +1,7 @@
 #*======== 从ADMIXTURE的LOG文件中获取最优K =======
 #*==============================================
-LOG_DIR='/mnt/d/幽门螺旋杆菌/Script/分析结果/ADMIXTURE/data/'
-PREFIX='WGS.aln.fasta.CDS_地理东亚及周边_3378_filtered'
+LOG_DIR='/mnt/f/1_唐小琼项目/13-ADMIXTURE/output/'
+PREFIX='TXQ_filtered'
 OUTPUT_FILE="${LOG_DIR}/cv_results.csv"
 
 # 创建CSV文件并添加标题行
