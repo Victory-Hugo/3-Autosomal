@@ -22,7 +22,7 @@ VERYFASTTREE_PATH="VeryFastTree"
 INPUT_DIR="${CODE_DIR}/tmp/海拔/input"  
 OUTPUT_DIR="${CODE_DIR}/tmp/海拔/output"
 FASTA_DIR="/mnt/d/幽门螺旋杆菌/Script/分析结果/1-序列处理流/output/merge_fasta/不考虑InDel/7544_Sample/"
-
+FST_FILE="/mnt/d/幽门螺旋杆菌/Script/分析结果/FST/output/海拔/处理后FST.csv" #? 可选参数，如果没有则不可视化Fst
 # 第一步：准备序列与基因型输入
 "${PYTHON3_PATH}" "${PYTHON_FASTA_SCRIPT}" \
     "${INPUT_DIR}/list.txt" \
@@ -59,6 +59,19 @@ Rscript "${R_SCRIPT}" \
   "${OUTPUT_DIR}" \
   "${GEMMA_PATH}"
 
+# 第三步：生成曼哈顿+Fst图
+Rscript "${CODE_DIR}/python/4-曼哈顿.R" \
+    --input "${OUTPUT_DIR}/bugwas_biallelic_lmmout_allSNPs.txt" \
+    --gff "${GFF_FILE}" \
+    --fst "${FST_FILE}" \
+    --outdir "${OUTPUT_DIR}/plots" \
+    --format "pdf" \
+    --threshold 5 \
+    --label_threshold 7 \
+    --fst_lower 0.4 \
+    --fst_upper 0.6 \
+    --fst_label 0.7
+
 # 第三步：整理注释显著位点
 #? --dist_threshold   越大，保留的显著位点越多
 #? --logp_threshold 2 意味着只保留 p < 0.01 的 SNP 进入后续注释
@@ -67,4 +80,4 @@ Rscript "${R_SCRIPT}" \
     --gff_file "${GFF_FILE}" \
     --output_dir "${OUTPUT_DIR}/func" \
     --logp_threshold 2 \
-    --dist_threshold 1000           
+    --dist_threshold 1000
