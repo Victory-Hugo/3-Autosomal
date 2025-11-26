@@ -7,6 +7,7 @@ library(readr)
 library(tidyr)
 library(ggplot2)
 library(ggrastr)
+library(stringr)
 
 
 # 颜色配置，与 Jupyter 可视化保持一致
@@ -18,12 +19,18 @@ option_list <- list(
   make_option(c("-i", "--input"),
               default="/mnt/f/OneDrive/文档（科研）/脚本/Download/3-Autosomal/8-GWAS-BUGWAS/tmp/海拔/output/bugwas_biallelic_lmmout_allSNPs.txt",
               help="GWAS 结果文件路径"),
+  make_option(c("-g", "--gff"),
+              default="/mnt/f/OneDrive/文档（科研）/脚本/Download/3-Autosomal/8-GWAS-BUGWAS/conf/NC_000915.gff",
+              help="GFF 注释文件路径"),
   make_option(c("-o", "--outdir"),
               default="/mnt/f/OneDrive/文档（科研）/脚本/Download/3-Autosomal/8-GWAS-BUGWAS/tmp/海拔/output/plots",
               help="输出目录"),
   make_option(c("-t", "--threshold"),
               default=5, type="double",
               help="-log10(p) 阈值"),
+  make_option(c("-l", "--label_threshold"),
+              default=7, type="double",
+              help="显著 SNP 标注所需的 -log10(p) 阈值"),
   make_option(c("-f", "--format"),
               default="png",
               help="输出格式：png/pdf/svg"),
@@ -33,6 +40,7 @@ option_list <- list(
 )
 opt <- parse_args(OptionParser(option_list=option_list))
 if (!file.exists(opt$input)) stop("找不到输入文件: ", opt$input)
+if (!file.exists(opt$gff)) stop("找不到 GFF 文件: ", opt$gff)
 
 dir.create(opt$outdir, showWarnings=FALSE, recursive=TRUE)
 
@@ -54,16 +62,21 @@ gwas$negLog10[is.infinite(gwas$negLog10)] <- NA
 gwas <- drop_na(gwas, negLog10, ps)
 if (nrow(gwas) == 0) stop("清洗后没有可用 SNP。")
 
+palette_colors <- c("#D55E00", "#E39400", "#E0C318", "#14A16A", "#0072B2")
+max_pos <- max(gwas$ps, na.rm=TRUE)
+physical_limits <- c(0, max(1600000, max_pos))
+x_breaks <- seq(0, physical_limits[2], by=200000)
+
 # 绘制曼哈顿图
 manhattan_path <- file.path(opt$outdir, paste0("GWAS_Manhattan.", opt$format))
-manhattan_data <- gwas |>
-  mutate(point_col = ifelse(negLog10 >= opt$threshold, SIG_COLOR, BASE_COLOR))
+manhattan_data <- gwas
 y_breaks <- seq(0, ceiling(max(manhattan_data$negLog10, na.rm=TRUE) / 2) * 2, by=2)
 if (tail(y_breaks, 1) < max(manhattan_data$negLog10, na.rm=TRUE)) {
   y_breaks <- c(y_breaks, tail(y_breaks, 1) + 2)
 }
-x_breaks <- seq(0, 1600000, by=200000)
-threshold_line <- 5
+threshold_line <- opt$threshold
+below_threshold <- manhattan_data |> filter(negLog10 < threshold_line)
+above_threshold <- manhattan_data |> filter(negLog10 >= threshold_line)
 
 theme_manhattan <- theme_classic(base_size=10) +
   theme(
@@ -73,15 +86,31 @@ theme_manhattan <- theme_classic(base_size=10) +
     axis.ticks.length = unit(0.2, "cm"),
     plot.title = element_text(hjust=0.5, face="bold"),
     axis.text.x = element_text(size=8),
-    axis.text.y = element_text(size=8)
+    axis.text.y = element_text(size=8),
+    panel.border = element_rect(color="black", fill=NA, linewidth=0.4)
   )
 
-manhattan_plot <- ggplot(manhattan_data, aes(x=ps, y=negLog10)) +
-  geom_point_rast(aes(color=point_col), size=0.9, alpha=0.9, show.legend=FALSE) +
-  scale_color_identity() +
+manhattan_core <- ggplot() +
+  geom_point_rast(
+    data=below_threshold,
+    aes(x=ps, y=negLog10),
+    color="#B0B0B0",
+    size=0.8,
+    alpha=0.8,
+    show.legend=FALSE
+  ) +
+  geom_point_rast(
+    data=above_threshold,
+    aes(x=ps, y=negLog10, color=negLog10),
+    size=1.1,
+    alpha=0.95,
+    show.legend=FALSE
+  ) +
+  scale_color_gradientn(colors=palette_colors, limits=c(threshold_line, max(manhattan_data$negLog10, na.rm=TRUE))) +
   geom_hline(yintercept=threshold_line, color="black", linetype="dashed", linewidth=0.4) +
   scale_x_continuous(
     breaks=x_breaks,
+    limits=physical_limits,
     expand=c(0, 0)
   ) +
   scale_y_continuous(
@@ -92,9 +121,69 @@ manhattan_plot <- ggplot(manhattan_data, aes(x=ps, y=negLog10)) +
   labs(x="Genomic position (bp)", y="-log10(p-value)", title=opt$title) +
   theme_manhattan
 
+# 读取 GFF 构建注释范围供标注使用
+gff_cols <- c("seqid", "source", "type", "start", "end", "score", "strand", "phase", "attributes")
+gff_data <- read_delim(
+  opt$gff,
+  delim="\t",
+  comment="#",
+  col_names=gff_cols,
+  col_types=cols(.default = "c")
+)
+gene_ranges <- gff_data |>
+  mutate(
+    start = as.numeric(start),
+    end = as.numeric(end),
+    gene_name = str_remove(str_extract(attributes, "gene=[^;]+"), "gene="),
+    product = str_remove(str_extract(attributes, "product=[^;]+"), "product=")
+  ) |>
+  filter(!is.na(start), !is.na(end), type %in% c("gene", "CDS")) |>
+  transmute(
+    start,
+    end,
+    product_label = coalesce(product, gene_name)
+  )
+
+# 显著 SNP 注释
+annotation_df <- NULL
+if (nrow(above_threshold) > 0) {
+  annotation_df <- above_threshold |>
+    rowwise() |>
+    mutate(
+      product_label = {
+        hits <- gene_ranges$product_label[gene_ranges$start <= ps & gene_ranges$end >= ps]
+        if (length(hits) == 0) NA_character_ else hits[1]
+      }
+    ) |>
+    ungroup() |>
+    mutate(product_label = ifelse(is.na(product_label), paste0("Pos:", ps), product_label))
+}
+
+if (!is.null(annotation_df) && nrow(annotation_df) > 0) {
+  annotation_df <- annotation_df |> filter(negLog10 >= opt$label_threshold)
+  annotation_df <- annotation_df |>
+    filter(!is.na(product_label), product_label != "") |>
+    arrange(desc(negLog10)) |>
+    group_by(product_label) |>
+    slice_head(n = 1) |>
+    ungroup()
+}
+
+if (!is.null(annotation_df) && nrow(annotation_df) > 0) {
+  manhattan_core <- manhattan_core +
+    geom_label(
+      data=annotation_df,
+      aes(x=ps, y=negLog10, label=product_label),
+      size=2.5,
+      color="black",
+      fill=NA,
+      label.size=NA,
+      label.padding=unit(0.05, "lines")
+    )
+}
 
 message("绘制曼哈顿图 -> ", manhattan_path)
-ggsave(manhattan_path, manhattan_plot, width=7, height=4, dpi=300, bg="white")
+ggsave(manhattan_path, manhattan_core, width=7, height=4, dpi=300, bg="white")
 
 # 绘制 QQ 图
 pvals <- sort(gwas$p_lrt)
@@ -112,8 +201,8 @@ qq_df <- tibble(
 theme_qq <- theme_classic(base_size=10) +
   theme(
     text = element_text(family="Arial"),
-    axis.line = element_line(color="#1f6d8f", linewidth=0.4),
-    axis.ticks = element_line(color="#4cd2de", linewidth=0.3),
+    axis.line = element_line(color="#000000", linewidth=0.4),
+    axis.ticks = element_line(color="#262626", linewidth=0.3),
     plot.title = element_text(hjust=0.5, face="bold")
   )
 
