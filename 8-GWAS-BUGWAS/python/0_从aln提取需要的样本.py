@@ -1,31 +1,3 @@
-########
-#!方案一#
-########
-# # 1. 使用集合存储目标菌株，提升匹配速度
-# with open("/mnt/d/幽门螺旋杆菌/Script/分析结果/GWAS/script/strainsSubpop.txt", 'r') as f:
-#     target_strains = {line.strip().split()[0] for line in f if line.strip()}
-
-# # 2. 逐行读取 FASTA 文件，实时写入匹配记录（支持多行序列）
-# with open("/mnt/d/幽门螺旋杆菌/Script/分析结果/merged_fasta/8622_noInDel.aln", 'r') as fin, \
-#      open("/mnt/d/幽门螺旋杆菌/Script/分析结果/GWAS/input/alignmentSub.aln", 'w') as fout:
-    
-#     write_flag = False  # 标记是否写入当前记录
-#     for line in fin:
-#         if line.startswith('>'):
-#             # 遇到新的 header，判断菌株名称是否在目标集合中
-#             strain_name = line[1:].split()[0]
-#             write_flag = strain_name in target_strains
-#             if write_flag:
-#                 fout.write(line)
-#                 fout.flush()  # 实时写入 header
-#         else:
-#             # 非 header 行，如果上一个 header 匹配，则写入当前行（可能为多行序列）
-#             if write_flag:
-#                 fout.write(line)
-#                 fout.flush()  # 实时写入序列行
-########
-#!方案二#
-########
 import os
 import sys
 import argparse
