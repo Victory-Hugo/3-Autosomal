@@ -5,12 +5,13 @@
 ## 从全球对齐中提取重点人群的菌株序列
 ## 输入：strainsSubpop.txt [重点人群菌株列表], DATA/woHpGP_dnds.cvg70.aln [全球对齐]
 ## 输出：alignmentSub.aln [仅包含重点人群菌株的全球对齐]
-PYTHON_FASTA_SCRIPT="/mnt/f/OneDrive/文档（科研）/脚本/Download/3-Autosomal/8-GWAS-BUGWAS/python/0_从aln提取需要的样本.py" #todo该脚本将路径下的多个fasta文件（长度一致）拼接为一个aln文件
-PYTHON_BUGWAS_SCRIPT="/mnt/f/OneDrive/文档（科研）/脚本/Download/3-Autosomal/8-GWAS-BUGWAS/python/0_准备bugwas输入文件.py" #todo该脚本将输入的txt文件转换为bugwas所需的基因型文件
-PYTHON3_PATH="/home/luolintao/miniconda3/bin/python3" #todo python3的路径
-INPUT_DIR="/mnt/d/幽门螺旋杆菌/Script/分析结果/8-临床结局相关/data/GWAS/Atrophy-萎缩" #todo 输入目录
-FASTA_DIR="/mnt/d/幽门螺旋杆菌/Script/分析结果/1-序列处理流/output/merge_fasta/不考虑InDel/7544_Sample/" #todo fasta文件所在目录
-VERYFASTTREE_PATH='/mnt/e/Scientifc_software/veryfasttree-master/veryfasttree-master/VeryFastTree' #todo VeryFastTree的路径
+CODE_DIR="/mnt/f/OneDrive/文档（科研）/脚本/Download/3-Autosomal/8-GWAS-BUGWAS" #? 脚本目录
+PYTHON_FASTA_SCRIPT="${CODE_DIR}/python/0_从aln提取需要的样本.py" #?该脚本将路径下的多个fasta文件（长度一致）拼接为一个aln文件
+PYTHON_BUGWAS_SCRIPT="${CODE_DIR}/python/0_准备bugwas输入文件.py" #?该脚本将输入的txt文件转换为bugwas所需的基因型文件
+PYTHON3_PATH="/home/luolintao/miniconda3/envs/BigLin/bin/python3" #? python3的路径
+INPUT_DIR="/mnt/d/幽门螺旋杆菌/Script/分析结果/8-临床结局相关/data/GWAS/Atrophy-萎缩" #? 输入目录
+FASTA_DIR="/mnt/d/幽门螺旋杆菌/Script/分析结果/1-序列处理流/output/merge_fasta/不考虑InDel/7544_Sample/" #? fasta文件所在目录
+VERYFASTTREE_PATH='VeryFastTree' #? VeryFastTree的路径
 
 #* 第一步
 ${PYTHON3_PATH} ${PYTHON_FASTA_SCRIPT} \
@@ -27,7 +28,7 @@ nohup ${VERYFASTTREE_PATH} -nt \
     -threads 21 \
     ${INPUT_DIR}/alignmentSub.temp \
     > ${INPUT_DIR}/treeFull.nwk \
-    2> ${INPUT_DIR}/treeFull.log & #todo 异步运行VeryFastTree生成系统发育树
+    2> ${INPUT_DIR}/treeFull.log & #? 异步运行VeryFastTree生成系统发育树
 
 
 #* 生成基因型文件（使用所有SNP - 包括CDS和基因间）

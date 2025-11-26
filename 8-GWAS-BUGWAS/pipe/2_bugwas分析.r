@@ -1,5 +1,12 @@
-library(bugwas)
+#* BUGWAS分析脚本
+#* 安装bugwas包（如果尚未安装）
+# 使用备份：install.packages("https://1835545223.v.123pan.cn/1835545223/24078748", repos=NULL, type="source")
+# install.packages("https://raw.githubusercontent.com/sgearle/bugwas/master/build/bugwas_1.0.tar.gz", repos=NULL, type="source")
+#* 安装gemma软件（如果尚未安装）
+# conda install -c bioconda gemma
 
+
+library(bugwas)
 # 定义输入输出目录
 GFF_FILE_PATH <- "/mnt/f/OneDrive/文档（科研）/脚本/Download/3-Autosomal/8-GWAS-BUGWAS/conf/NC_000915.gff"
 BASE_DIR <- "/mnt/d/幽门螺旋杆菌/Script/分析结果/8-临床结局相关"
@@ -14,7 +21,7 @@ gen <- file.path(INPUT_DIR, "geno_biallelic_SNP.txt")
 pheno <- file.path(INPUT_DIR, "pheno.txt")
 phylo <- file.path(INPUT_DIR, "treeFull.nwk")
 prefix <- "bugwas"  # 分析结果文件前缀
-gem.path <- "/home/luolintao/miniconda3/bin/gemma"  # GEMMA软件路径
+gem.path <- "/home/luolintao/miniconda3/envs/BigLin/bin/gemma"  # GEMMA软件路径
 
 data <- lin_loc(
   gen = gen, 
