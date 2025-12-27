@@ -3,6 +3,7 @@ library(bugwas)
 # BUGWAS 分析脚本
 # 安装 bugwas 包（如果尚未安装）：
 #   install.packages("https://raw.githubusercontent.com/sgearle/bugwas/master/build/bugwas_1.0.tar.gz", repos = NULL, type = "source")
+#   install.packages("https://s1-software.oss-cn-chengdu.aliyuncs.com/bugwas_1.0.tar.gz", repos = NULL, type = "source")
 # 安装 gemma 软件（如果尚未安装）：
 #   conda install -c bioconda gemma
 
